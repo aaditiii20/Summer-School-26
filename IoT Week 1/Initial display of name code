@@ -1,0 +1,65 @@
+int rowPins[4] = {2, 3, 4, 5};
+int colPins[4] = {6, 7, 8, 9};
+
+// Letter A
+byte letterA[4][4] = {
+  {0,1,1,0},
+  {1,0,0,1},
+  {1,1,1,1},
+  {1,0,0,1}
+};
+
+// Letter G
+byte letterG[4][4] = {
+  {0,1,1,1},
+  {1,0,0,0},
+  {1,0,1,1},
+  {0,1,1,1}
+};
+
+void setup() {
+  for(int i = 0; i < 4; i++) {
+    pinMode(rowPins[i], OUTPUT);
+    pinMode(colPins[i], OUTPUT);
+  }
+}
+
+void displayLetter(byte pattern[4][4], int duration) {
+
+  unsigned long startTime = millis();
+
+  while(millis() - startTime < duration) {
+
+    for(int row = 0; row < 4; row++) {
+
+      // Turn OFF all rows
+      for(int r = 0; r < 4; r++)
+        digitalWrite(rowPins[r], LOW);
+
+      // Set columns
+      for(int col = 0; col < 4; col++) {
+
+        if(pattern[row][col] == 1)
+          digitalWrite(colPins[col], LOW);
+        else
+          digitalWrite(colPins[col], HIGH);
+      }
+
+      // Turn ON current row
+      digitalWrite(rowPins[row], HIGH);
+
+      delay(2);
+    }
+  }
+}
+
+void loop() {
+
+  displayLetter(letterA, 1000);
+
+  delay(300);
+
+  displayLetter(letterG, 1000);
+
+  delay(300);
+}
