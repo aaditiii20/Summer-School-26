@@ -1,0 +1,87 @@
+const int redLED = 3;
+const int yellowLED = 5;
+const int greenLED = 6;
+
+const int buttonPin = 2;
+
+unsigned long startTime;
+unsigned long reactionTime;
+
+void setup()
+{
+  pinMode(redLED, OUTPUT);
+  pinMode(yellowLED, OUTPUT);
+  pinMode(greenLED, OUTPUT);
+
+  pinMode(buttonPin, INPUT);
+
+  Serial.begin(9600);
+
+  randomSeed(analogRead(A0));
+
+  Serial.println("Reaction Time Game");
+}
+
+void loop()
+{
+  digitalWrite(redLED, LOW);
+  digitalWrite(yellowLED, LOW);
+  digitalWrite(greenLED, LOW);
+
+  Serial.println();
+  Serial.println("Get Ready...");
+  
+  delay(1000);
+
+  // Random LED sequence
+  for(int i = 0; i < 5; i++)
+  {
+    int randomLED = random(3);
+
+    int duration = random(200,1000);
+
+    if(randomLED == 0)
+    {
+      digitalWrite(redLED, HIGH);
+      delay(duration);
+      digitalWrite(redLED, LOW);
+    }
+
+    else if(randomLED == 1)
+    {
+      digitalWrite(yellowLED, HIGH);
+      delay(duration);
+      digitalWrite(yellowLED, LOW);
+    }
+
+    else
+    {
+      digitalWrite(greenLED, HIGH);
+      delay(duration);
+      digitalWrite(greenLED, LOW);
+    }
+
+    delay(200);
+  }
+
+  // Reaction signal
+
+  digitalWrite(greenLED, HIGH);
+
+  startTime = millis();
+
+  while(digitalRead(buttonPin) == LOW)
+  {
+    // Wait for button press
+  }
+
+  reactionTime = millis() - startTime;
+
+  digitalWrite(greenLED, LOW);
+
+  Serial.print("Reaction Time: ");
+  Serial.print(reactionTime);
+  Serial.println(" ms");
+
+  delay(3000);
+}
