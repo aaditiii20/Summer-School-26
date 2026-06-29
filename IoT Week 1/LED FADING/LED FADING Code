@@ -1,0 +1,24 @@
+// C++ code
+//
+int leds[] = {5,6,9,10,11};
+
+
+void setup(){
+
+  for(int i=0;i<=4;i++){
+  pinMode(leds[i],OUTPUT);
+}
+}
+    
+  void loop(){
+  for(int j=0;j<=4;j++){
+    for(int brightness=0;brightness<=255;brightness+=5){
+      analogWrite(leds[j],brightness);
+      delay(50);}
+      
+      for(int brightness=255;brightness>=0;brightness-=5){
+        analogWrite(leds[j],brightness);
+        delay(50);}
+                   
+}
+  }
