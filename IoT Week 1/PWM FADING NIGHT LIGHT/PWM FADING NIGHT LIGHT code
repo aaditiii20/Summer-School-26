@@ -1,0 +1,37 @@
+const int LED_PIN = 9;
+
+int brightness = 0;
+int fadeAmount = 5;
+
+unsigned long previousMillis = 0;
+const int interval = 30;
+
+void setup() {
+
+  pinMode(LED_PIN, OUTPUT);
+
+  Serial.begin(9600);
+
+  Serial.println("PWM Night Light Started");
+}
+
+void loop() {
+
+  unsigned long currentMillis = millis();
+
+  if (currentMillis - previousMillis >= interval) {
+
+    previousMillis = currentMillis;
+
+    analogWrite(LED_PIN, brightness);
+
+    brightness += fadeAmount;
+
+    if (brightness <= 0 || brightness >= 255) {
+      fadeAmount = -fadeAmount;
+    }
+
+    Serial.print("Brightness: ");
+    Serial.println(brightness);
+  }
+}
