@@ -1,0 +1,30 @@
+int blinkCount = 0;
+int potValue;
+int delayTime;
+
+void setup() {
+  pinMode(13, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+
+  potValue = analogRead(A0);
+
+  delayTime = map(potValue, 0, 1023, 100, 1000);
+
+  digitalWrite(13, HIGH);
+  delay(delayTime);
+
+  digitalWrite(13, LOW);
+  delay(delayTime);
+
+  blinkCount++;
+
+  Serial.print("Blink Count: ");
+  Serial.print(blinkCount);
+
+  Serial.print(" | Delay: ");
+  Serial.print(delayTime);
+  Serial.println(" ms");
+}
