@@ -1,0 +1,76 @@
+Commands:
+  R - Red LED ON
+  G - Green LED ON
+  B - Blue LED ON
+  X - All LEDs OFF
+  F - Flash all LEDs 5 times
+*/
+
+const int redLED = 8;
+const int greenLED = 9;
+const int blueLED = 10;
+
+char command;
+
+void setup() {
+
+  pinMode(redLED, OUTPUT);
+  pinMode(greenLED, OUTPUT);
+  pinMode(blueLED, OUTPUT);
+
+  Serial.begin(9600);
+}
+
+void loop() {
+
+  if (Serial.available()) {
+
+    command = Serial.read();
+
+    switch (command) {
+
+      case 'R':
+        digitalWrite(redLED, HIGH);
+        digitalWrite(greenLED, LOW);
+        digitalWrite(blueLED, LOW);
+        break;
+
+      case 'G':
+        digitalWrite(redLED, LOW);
+        digitalWrite(greenLED, HIGH);
+        digitalWrite(blueLED, LOW);
+        break;
+
+      case 'B':
+        digitalWrite(redLED, LOW);
+        digitalWrite(greenLED, LOW);
+        digitalWrite(blueLED, HIGH);
+        break;
+
+      case 'X':
+        digitalWrite(redLED, LOW);
+        digitalWrite(greenLED, LOW);
+        digitalWrite(blueLED, LOW);
+        break;
+
+      case 'F':
+
+        for(int i=0;i<5;i++){
+
+          digitalWrite(redLED,HIGH);
+          digitalWrite(greenLED,HIGH);
+          digitalWrite(blueLED,HIGH);
+
+          delay(250);
+
+          digitalWrite(redLED,LOW);
+          digitalWrite(greenLED,LOW);
+          digitalWrite(blueLED,LOW);
+
+          delay(250);
+        }
+
+        break;
+    }
+  }
+}
