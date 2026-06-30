@@ -1,0 +1,114 @@
+const int RED = 8;
+const int YELLOW = 9;
+const int GREEN = 10;
+const int BUTTON = 7;
+
+enum TrafficState {
+  RED_STATE,
+  YELLOW_STATE,
+  GREEN_STATE,
+  PEDESTRIAN_RED
+};
+
+TrafficState currentState = RED_STATE;
+
+unsigned long stateStartTime = 0;
+
+// Function Prototypes
+void setState(TrafficState newState);
+void logState(String state);
+
+void setup() {
+
+  pinMode(RED, OUTPUT);
+  pinMode(YELLOW, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+
+  pinMode(BUTTON, INPUT_PULLUP);
+
+  Serial.begin(9600);
+
+  setState(RED_STATE);
+}
+
+void loop() {
+
+  // Pedestrian request works anytime except during RED or another crossing
+  if (digitalRead(BUTTON) == LOW &&
+      currentState != RED_STATE &&
+      currentState != PEDESTRIAN_RED) {
+
+    setState(PEDESTRIAN_RED);
+  }
+
+  unsigned long elapsedTime = millis() - stateStartTime;
+
+  switch (currentState) {
+
+    case RED_STATE:
+      if (elapsedTime >= 5000) {
+        setState(YELLOW_STATE);
+      }
+      break;
+
+    case YELLOW_STATE:
+      if (elapsedTime >= 2000) {
+        setState(GREEN_STATE);
+      }
+      break;
+
+    case GREEN_STATE:
+      if (elapsedTime >= 4000) {
+        setState(RED_STATE);
+      }
+      break;
+
+    case PEDESTRIAN_RED:
+      if (elapsedTime >= 8000) {
+        setState(RED_STATE);
+      }
+      break;
+  }
+}
+
+void setState(TrafficState newState) {
+
+  // Turn OFF all LEDs
+  digitalWrite(RED, LOW);
+  digitalWrite(YELLOW, LOW);
+  digitalWrite(GREEN, LOW);
+
+  currentState = newState;
+  stateStartTime = millis();
+
+  switch (newState) {
+
+    case RED_STATE:
+      digitalWrite(RED, HIGH);
+      logState("RED");
+      break;
+
+    case YELLOW_STATE:
+      digitalWrite(YELLOW, HIGH);
+      logState("YELLOW");
+      break;
+
+    case GREEN_STATE:
+      digitalWrite(GREEN, HIGH);
+      logState("GREEN");
+      break;
+
+    case PEDESTRIAN_RED:
+      digitalWrite(RED, HIGH);
+      logState("PEDESTRIAN CROSSING ACTIVE");
+      break;
+  }
+}
+
+void logState(String state) {
+
+  Serial.print("[");
+  Serial.print(millis());
+  Serial.print(" ms] ");
+  Serial.println(state);
+}
