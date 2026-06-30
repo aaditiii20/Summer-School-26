@@ -1,0 +1,182 @@
+/*
+-------------------------------------------------------
+VENDING MACHINE STATE TRANSITION DIAGRAM
+
+                 Insert Coin
+IDLE -----------------------------> COIN_INSERTED
+ ^                                      |
+ |                                      |
+ | Cancel                               | Select Item
+ |                                      v
+ +------------------------------ ITEM_SELECTED
+                                         |
+                                         | Start Dispensing
+                                         v
+                                    DISPENSING
+                                         |
+                                         | Complete
+                                         v
+                                       IDLE
+-------------------------------------------------------
+*/
+
+const int coinButton = 2;
+const int selectButton = 3;
+const int cancelButton = 4;
+
+const int idleLED = 8;
+const int coinLED = 9;
+const int actionLED = 10;
+
+enum MachineState {
+  IDLE,
+  COIN_INSERTED,
+  ITEM_SELECTED,
+  DISPENSING
+};
+
+MachineState currentState = IDLE;
+
+unsigned long dispenseStartTime = 0;
+
+// Function prototypes
+void setState(MachineState newState);
+void updateLEDs();
+
+void setup() {
+
+  pinMode(coinButton, INPUT_PULLUP);
+  pinMode(selectButton, INPUT_PULLUP);
+  pinMode(cancelButton, INPUT_PULLUP);
+
+  pinMode(idleLED, OUTPUT);
+  pinMode(coinLED, OUTPUT);
+  pinMode(actionLED, OUTPUT);
+
+  Serial.begin(9600);
+
+  setState(IDLE);
+}
+
+void loop() {
+
+  switch (currentState) {
+
+    case IDLE:
+
+      if (digitalRead(coinButton) == LOW) {
+        setState(COIN_INSERTED);
+        delay(200);
+      }
+
+      break;
+
+    case COIN_INSERTED:
+
+      if (digitalRead(selectButton) == LOW) {
+        setState(ITEM_SELECTED);
+        delay(200);
+      }
+
+      if (digitalRead(cancelButton) == LOW) {
+        setState(IDLE);
+        delay(200);
+      }
+
+      break;
+
+    case ITEM_SELECTED:
+
+      setState(DISPENSING);
+
+      break;
+
+    case DISPENSING:
+
+      // Blink action LED while dispensing
+      digitalWrite(actionLED, (millis() / 300) % 2);
+
+      if (millis() - dispenseStartTime >= 3000) {
+        setState(IDLE);
+      }
+
+      break;
+  }
+}
+
+void setState(MachineState newState) {
+
+  Serial.print("Transition: ");
+
+  switch (currentState) {
+    case IDLE:
+      Serial.print("IDLE");
+      break;
+
+    case COIN_INSERTED:
+      Serial.print("COIN_INSERTED");
+      break;
+
+    case ITEM_SELECTED:
+      Serial.print("ITEM_SELECTED");
+      break;
+
+    case DISPENSING:
+      Serial.print("DISPENSING");
+      break;
+  }
+
+  Serial.print(" -> ");
+
+  switch (newState) {
+    case IDLE:
+      Serial.println("IDLE");
+      break;
+
+    case COIN_INSERTED:
+      Serial.println("COIN_INSERTED");
+      break;
+
+    case ITEM_SELECTED:
+      Serial.println("ITEM_SELECTED");
+      break;
+
+    case DISPENSING:
+      Serial.println("DISPENSING");
+      break;
+  }
+
+  currentState = newState;
+
+  updateLEDs();
+
+  if (newState == DISPENSING) {
+    dispenseStartTime = millis();
+  }
+}
+
+void updateLEDs() {
+
+  digitalWrite(idleLED, LOW);
+  digitalWrite(coinLED, LOW);
+  digitalWrite(actionLED, LOW);
+
+  switch (currentState) {
+
+    case IDLE:
+      digitalWrite(idleLED, HIGH);
+      break;
+
+    case COIN_INSERTED:
+      digitalWrite(coinLED, HIGH);
+      break;
+
+    case ITEM_SELECTED:
+      digitalWrite(actionLED, HIGH);
+      break;
+
+    case DISPENSING:
+      // blinking handled in loop()
+      break;
+  }
+}
