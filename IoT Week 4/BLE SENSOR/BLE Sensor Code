@@ -1,0 +1,59 @@
+#include <BLEDevice.h>
+#include <BLEServer.h>
+#include <BLEUtils.h>
+#include <BLE2902.h>
+#include <DHT.h>
+
+#define DHTPIN 4
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
+
+BLECharacteristic *pCharacteristic;
+
+#define SERVICE_UUID        "12345678-1234-1234-1234-1234567890AB"
+#define CHARACTERISTIC_UUID "ABCD1234-5678-90AB-CDEF-1234567890AB"
+
+void setup() {
+
+  Serial.begin(115200);
+  dht.begin();
+
+  BLEDevice::init("ESP32_BLE_Sensor");
+
+  BLEServer *server = BLEDevice::createServer();
+  BLEService *service = server->createService(SERVICE_UUID);
+
+  pCharacteristic = service->createCharacteristic(
+      CHARACTERISTIC_UUID,
+      BLECharacteristic::PROPERTY_READ |
+      BLECharacteristic::PROPERTY_NOTIFY
+  );
+
+  pCharacteristic->addDescriptor(new BLE2902());
+
+  service->start();
+
+  BLEAdvertising *advertising = BLEDevice::getAdvertising();
+  advertising->start();
+
+  Serial.println("BLE Sensor Started");
+}
+
+void loop() {
+
+  float temp = dht.readTemperature();
+  float hum = dht.readHumidity();
+
+  String data =
+      "Temperature: " + String(temp) +
+      " C, Humidity: " + String(hum) +
+      " %, Time: " + String(millis());
+
+  pCharacteristic->setValue(data.c_str());
+  pCharacteristic->notify();
+
+  Serial.println(data);
+
+  delay(3000);
+}
