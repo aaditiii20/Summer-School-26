@@ -1,0 +1,56 @@
+const int ldrPin = A0;
+const int pirPin = 2;
+const int ledPin = 9;
+
+int ldrValue;
+bool motionDetected;
+
+void setup() {
+
+  pinMode(pirPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+
+  Serial.begin(9600);
+}
+
+void loop() {
+
+  ldrValue = analogRead(ldrPin);
+  motionDetected = digitalRead(pirPin);
+
+  Serial.print("LDR Value: ");
+  Serial.print(ldrValue);
+
+  Serial.print(" Motion: ");
+  Serial.println(motionDetected);
+
+  // Daytime
+  if (ldrValue > 700) {
+
+    analogWrite(ledPin, 0);
+
+    Serial.println("DAYTIME -> LIGHT OFF");
+  }
+
+  // Night
+  else {
+
+    // Vehicle or person detected
+    if (motionDetected) {
+
+      analogWrite(ledPin, 255);
+
+      Serial.println("NIGHT + MOTION -> FULL BRIGHTNESS");
+    }
+
+    // Empty road
+    else {
+
+      analogWrite(ledPin, 80);
+
+      Serial.println("NIGHT + NO MOTION -> DIM MODE");
+    }
+  }
+
+  delay(200);
+}
