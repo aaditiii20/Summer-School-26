@@ -1,0 +1,75 @@
+#include <WiFi.h>
+#include <WebServer.h>
+#include <DHT.h>
+
+#define DHTPIN 4
+#define DHTTYPE DHT11
+#define LED 2
+
+const char* ssid = "YOUR_WIFI_NAME";
+const char* password = "YOUR_WIFI_PASSWORD";
+
+DHT dht(DHTPIN, DHTTYPE);
+WebServer server(80);
+
+bool ledState = false;
+
+void handleRoot() {
+
+  float t = dht.readTemperature();
+  float h = dht.readHumidity();
+
+  String page = "<html><head>";
+  page += "<meta http-equiv='refresh' content='10'>";
+  page += "</head><body>";
+
+  page += "<h2>ESP32 Temperature Monitor</h2>";
+  page += "<p>Temperature: " + String(t) + " C</p>";
+  page += "<p>Humidity: " + String(h) + " %</p>";
+  page += "<p>Uptime: " + String(millis()/1000) + " seconds</p>";
+
+  page += "<a href='/toggle'><button>Toggle LED</button></a>";
+
+  page += "</body></html>";
+
+  server.send(200, "text/html", page);
+}
+
+void handleToggle() {
+
+  ledState = !ledState;
+  digitalWrite(LED, ledState);
+
+  server.sendHeader("Location","/");
+  server.send(303);
+}
+
+void setup() {
+
+  Serial.begin(115200);
+
+  pinMode(LED, OUTPUT);
+
+  dht.begin();
+
+  WiFi.begin(ssid,password);
+
+  while(WiFi.status()!=WL_CONNECTED){
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println();
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  server.on("/",handleRoot);
+  server.on("/toggle",handleToggle);
+
+  server.begin();
+}
+
+void loop() {
+
+  server.handleClient();
+}
