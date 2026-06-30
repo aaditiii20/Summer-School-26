@@ -1,0 +1,77 @@
+const int ena = 9;
+const int in1 = 8;
+const int in2 = 7;
+
+const int potPin = A0;
+const int dirButton = 2;
+const int stopButton = 3;
+
+bool direction = true;
+bool running = true;
+
+bool lastDirState = HIGH;
+bool lastStopState = HIGH;
+
+void setup() {
+
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(ena, OUTPUT);
+
+  pinMode(dirButton, INPUT_PULLUP);
+  pinMode(stopButton, INPUT_PULLUP);
+
+  Serial.begin(9600);
+}
+
+void loop() {
+
+  // Read speed from potentiometer
+  int potValue = analogRead(potPin);
+  int speedValue = map(potValue, 0, 1023, 0, 255);
+
+  // Toggle direction
+  bool dirState = digitalRead(dirButton);
+  if (lastDirState == HIGH && dirState == LOW) {
+    direction = !direction;
+  }
+  lastDirState = dirState;
+
+  // Toggle motor state
+  bool stopState = digitalRead(stopButton);
+  if (lastStopState == HIGH && stopState == LOW) {
+    running = !running;
+  }
+  lastStopState = stopState;
+
+  // Apply motor control
+  if (running) {
+
+    if (direction) {
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+    } else {
+      digitalWrite(in1, LOW);
+      digitalWrite(in2, HIGH);
+    }
+
+    analogWrite(ena, speedValue);
+
+  } else {
+
+    analogWrite(ena, 0);
+  }
+
+  // Display status
+  Serial.print("Direction: ");
+  Serial.print(direction ? "Forward" : "Reverse");
+
+  Serial.print(" | Speed: ");
+  Serial.print(map(speedValue, 0, 255, 0, 100));
+  Serial.print("%");
+
+  Serial.print(" | State: ");
+  Serial.println(running ? "Running" : "Stopped");
+
+  delay(200);
+}
