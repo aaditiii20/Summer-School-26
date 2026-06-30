@@ -1,0 +1,46 @@
+#include <Servo.h>
+
+Servo servoMotor;
+
+const int potPin = A0;
+const int buttonPin = 2;
+const int servoPin = 9;
+
+void setup() {
+
+  servoMotor.attach(servoPin);
+
+  pinMode(buttonPin, INPUT_PULLUP);
+
+  Serial.begin(9600);
+}
+
+void loop() {
+
+  // Read potentiometer
+  int potValue = analogRead(potPin);
+
+  // Convert to angle
+  int angle = map(potValue, 0, 1023, 0, 180);
+
+  servoMotor.write(angle);
+
+  Serial.print("Angle: ");
+  Serial.println(angle);
+
+  // Full sweep when button is pressed
+  if (digitalRead(buttonPin) == LOW) {
+
+    for (int i = 0; i <= 180; i++) {
+      servoMotor.write(i);
+      delay(10);
+    }
+
+    for (int i = 180; i >= 0; i--) {
+      servoMotor.write(i);
+      delay(10);
+    }
+  }
+
+  delay(50);
+}
