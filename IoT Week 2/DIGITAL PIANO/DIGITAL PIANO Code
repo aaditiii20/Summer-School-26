@@ -1,0 +1,63 @@
+const int buzzer = 8;
+
+const int buttons[] = {2, 3, 4, 5};
+
+const int notes[] = {
+  262, // C4
+  294, // D4
+  330, // E4
+  349  // F4
+};
+
+void setup() {
+
+  Serial.begin(9600);
+
+  pinMode(buzzer, OUTPUT);
+
+  for(int i = 0; i < 4; i++) {
+    pinMode(buttons[i], INPUT_PULLUP);
+  }
+
+  Serial.println("Digital Piano Ready");
+}
+
+void loop() {
+
+  bool keyPressed = false;
+
+  for(int i = 0; i < 4; i++) {
+
+    if(digitalRead(buttons[i]) == LOW) {
+
+      tone(buzzer, notes[i]);
+
+      Serial.print("Playing Note: ");
+
+      switch(i) {
+        case 0:
+          Serial.println("C4");
+          break;
+
+        case 1:
+          Serial.println("D4");
+          break;
+
+        case 2:
+          Serial.println("E4");
+          break;
+
+        case 3:
+          Serial.println("F4");
+          break;
+      }
+
+      keyPressed = true;
+      break;
+    }
+  }
+
+  if(!keyPressed) {
+    noTone(buzzer);
+  }
+}
