@@ -1,0 +1,8 @@
+# Ignore secret configuration files containing API keys and WiFi credentials
+config.h
+
+# Ignore typical Arduino IDE compilation artifacts
+/build/
+/libraries/
+*.hex
+*.elf
