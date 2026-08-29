@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏥 AYUSH Medical Search - Simple Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .search-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-box h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .search-btn {
+            background: #3498db;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .search-btn:hover {
+            background: #2980b9;
+        }
+        
+        .quick-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .quick-btn {
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .quick-btn:hover {
+            background: #d5dbdb;
+        }
+        
+        .results {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-item {
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .result-title {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .result-code {
+            color: #e74c3c;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        .result-description {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.2rem;
+            margin: 20px 0 10px 0;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 AYUSH Medical Search</h1>
+            <p>Search medical conditions in WHO ICD-11 and Traditional Indian Medicine (AYUSH)</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">45+</div>
+                <div class="stat-label">WHO ICD-11 Conditions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">25+</div>
+                <div class="stat-label">AYUSH Conditions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Traditional Medicines</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">16+</div>
+                <div class="stat-label">Treatment Procedures</div>
+            </div>
+        </div>
+        
+        <div class="search-box">
+            <h2>🔍 Search Medical Conditions</h2>
+            <input type="text" id="search-input" class="search-input" placeholder="Type any medical condition, symptom, or disease name...">
+            
+            <div>
+                <button class="search-btn" onclick="searchAll()">🌍 Search All Systems</button>
+                <button class="search-btn" onclick="searchWHO()">WHO Only</button>
+                <button class="search-btn" onclick="searchAYUSH()">AYUSH Only</button>
+            </div>
+            
+            <div class="quick-buttons">
+                <button class="quick-btn" onclick="quickSearch('diabetes')">🩺 Diabetes</button>
+                <button class="quick-btn" onclick="quickSearch('hypertension')">💓 High Blood Pressure</button>
+                <button class="quick-btn" onclick="quickSearch('arthritis')">🦴 Arthritis</button>
+                <button class="quick-btn" onclick="quickSearch('asthma')">🫁 Asthma</button>
+                <button class="quick-btn" onclick="quickSearch('depression')">🧠 Depression</button>
+                <button class="quick-btn" onclick="quickSearch('vata')">🕉️ Vata Dosha</button>
+            </div>
+        </div>
+        
+        <div id="results" style="display: none;">
+            <div class="results">
+                <h3>Search Results</h3>
+                <div id="results-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quick search function
+        function quickSearch(term) {
+            document.getElementById('search-input').value = term;
+            searchAll();
+        }
+        
+        // Search all systems
+        async function searchAll() {
+            const query = document.getElementById('search-input').value.trim();
+            if (!query) {
+                alert('Please enter a search term');
+                return;
+            }
+            
+            showLoading();
+            
+            try {
+                const [whoResponse, ayushResponse] = await Promise.all([
+                    fetch(`/who/search?query=${encodeURIComponent(query)}`),
+                    fetch(`/namaste/search?query=${encodeURIComponent(query)}&type=conditions`)
+                ]);
+                
+                const whoData = await whoResponse.json();
+                const ayushData = await ayushResponse.json();
+                
+                displayAllResults(whoData, ayushData, query);
+            } catch (error) {
+                showError('Search failed. Please check your connection and try again.');
+            }
+        }
+        
+        // Search WHO only
+        async function searchWHO() {
+            const query = document.getElementById('search-input').value.trim();
+            if (!query) {
+                alert('Please enter a search term');
+                return;
+            }
+            
+            showLoading();
+            
+            try {
+                const response = await fetch(`/who/search?query=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                displayWHOResults(data, query);
+            } catch (error) {
+                showError('WHO search failed. Please try again.');
+            }
+        }
+        
+        // Search AYUSH only
+        async function searchAYUSH() {
+            const query = document.getElementById('search-input').value.trim();
+            if (!query) {
+                alert('Please enter a search term');
+                return;
+            }
+            
+            showLoading();
+            
+            try {
+                const response = await fetch(`/namaste/search?query=${encodeURIComponent(query)}&type=conditions`);
+                const data = await response.json();
+                displayAYUSHResults(data, query);
+            } catch (error) {
+                showError('AYUSH search failed. Please try again.');
+            }
+        }
+        
+        // Display functions
+        function displayAllResults(whoData, ayushData, query) {
+            let html = `<h4>Results for "${query}"</h4>`;
+            
+            // WHO Results
+            if (whoData.results && whoData.results.length > 0) {
+                html += '<div class="section-title">🌍 WHO ICD-11 Results</div>';
+                whoData.results.slice(0, 5).forEach(item => {
+                    html += createResultItem(item, 'WHO');
+                });
+            }
+            
+            // AYUSH Results
+            if (ayushData.results && ayushData.results.length > 0) {
+                html += '<div class="section-title">🕉️ AYUSH Traditional Medicine Results</div>';
+                ayushData.results.slice(0, 5).forEach(item => {
+                    html += createResultItem(item, 'AYUSH');
+                });
+            }
+            
+            if ((!whoData.results || whoData.results.length === 0) && 
+                (!ayushData.results || ayushData.results.length === 0)) {
+                html += '<div class="result-item">No results found. Try different keywords.</div>';
+            }
+            
+            document.getElementById('results-content').innerHTML = html;
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function displayWHOResults(data, query) {
+            let html = `<h4>WHO ICD-11 Results for "${query}"</h4>`;
+            
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(item => {
+                    html += createResultItem(item, 'WHO');
+                });
+            } else {
+                html += '<div class="result-item">No WHO results found.</div>';
+            }
+            
+            document.getElementById('results-content').innerHTML = html;
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function displayAYUSHResults(data, query) {
+            let html = `<h4>AYUSH Results for "${query}"</h4>`;
+            
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(item => {
+                    html += createResultItem(item, 'AYUSH');
+                });
+            } else {
+                html += '<div class="result-item">No AYUSH results found.</div>';
+            }
+            
+            document.getElementById('results-content').innerHTML = html;
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function createResultItem(item, type) {
+            const code = type === 'WHO' ? item.code : item.namaste_code;
+            const symptoms = item.symptoms ? item.symptoms.join(', ') : '';
+            
+            return `
+                <div class="result-item">
+                    <div class="result-title">${item.name}</div>
+                    <div class="result-code">${type} Code: ${code}</div>
+                    <div class="result-description">${item.description}</div>
+                    ${symptoms ? `<div style="color: #27ae60; font-size: 0.9rem; margin-top: 5px;">Symptoms: ${symptoms}</div>` : ''}
+                </div>
+            `;
+        }
+        
+        function showLoading() {
+            document.getElementById('results-content').innerHTML = '<div class="loading">🔍 Searching medical databases...</div>';
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function showError(message) {
+            document.getElementById('results-content').innerHTML = `<div class="error">${message}</div>`;
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        // Enter key support
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchAll();
+            }
+        });
+        
+        // Focus on search input when page loads
+        window.addEventListener('load', function() {
+            document.getElementById('search-input').focus();
+        });
+    </script>
+</body>
+</html>

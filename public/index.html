@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AYUSH FHIR Terminology Portal</title>
+    <meta http-equiv="refresh" content="0; url=./frontend/working_portal.html">
+    <link rel="canonical" href="./frontend/working_portal.html">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #f0f9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .loading {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        .redirect-link {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .redirect-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .feature {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏥 AYUSH FHIR Portal</h1>
+        <p class="subtitle">Ultra-Precision Medical Terminology System</p>
+        
+        <div class="loading"></div>
+        <p>Redirecting to portal...</p>
+        
+        <a href="./frontend/working_portal.html" class="redirect-link">
+            Enter Portal Manually →
+        </a>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🔍</div>
+                <div>Smart Search</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🏥</div>
+                <div>FHIR R4</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🌐</div>
+                <div>Multi-System</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">✅</div>
+                <div>Validated</div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 40px; font-size: 0.9rem; opacity: 0.8;">
+            <p>🚀 Deployed on Vercel | ⚡ Serverless Architecture | 🌍 Global CDN</p>
+            <p><a href="/health" style="color: #fff; text-decoration: underline;">Health Check</a> | 
+               <a href="/api/search?q=diabetes" style="color: #fff; text-decoration: underline;">API Test</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced redirect with fallback
+        setTimeout(() => {
+            if (window.location.pathname === '/') {
+                window.location.href = './frontend/working_portal.html';
+            }
+        }, 2000);
+        
+        // Log deployment info
+        console.log('🏥 AYUSH FHIR Portal - Vercel Deployment');
+        console.log('🌐 Portal URL:', window.location.origin + '/frontend/working_portal.html');
+        console.log('🏥 Health Check:', window.location.origin + '/health');
+        console.log('📚 API Search:', window.location.origin + '/api/search?q=test');
+    </script>
+</body>
+</html>

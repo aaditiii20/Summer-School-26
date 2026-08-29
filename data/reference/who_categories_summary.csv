@@ -1,0 +1,8 @@
+category,count,sample_codes
+infectious_diseases,10,"1A00, 1A20, 1A40"
+neoplasms,5,"2A00.0, 2A70, 2A80"
+endocrine_diseases,5,"5A10, 5A11, 5A14"
+mental_disorders,5,"6A70, 6A71, 6B00"
+circulatory_diseases,5,"BA00, BA01, BB10"
+respiratory_diseases,3,"CA40, CA80, CB03"
+traditional_medicine,5,"TM26.001, TM26.002, TM26.AY001"

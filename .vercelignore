@@ -1,0 +1,80 @@
+# Vercel Ignore File
+# Files and directories to exclude from Vercel deployment
+
+# Development files
+.git
+.github
+.vscode
+.idea
+
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.venv
+venv
+env
+ENV
+
+# Logs
+logs/*
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Development tools
+dev.py
+test_*.py
+*_test.py
+testing/
+
+# Documentation (keep only essential)
+docs/*
+backup/
+TMS*
+*.pdf
+
+# Large data files (keep samples only)
+data/*
+!data/sample_*
+
+# Batch files (not needed on Vercel)
+*.bat
+*.sh
+
+# Docker files (not needed for Vercel)
+Dockerfile
+docker-compose.yml
+nginx.conf
+
+# Environment files
+.env
+.env.local
+.env.development
+!.env.production
+
+# Build artifacts
+build/
+dist/
+*.so
+*.dll
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backup files
+*.zip
+*.tar.gz
+*.backup
+
+# SSL certificates
+ssl/*

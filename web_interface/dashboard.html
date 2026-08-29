@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AYUSH FHIR - Simple Medical Terminology Search</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .simple-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .search-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .search-form {
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .search-btn {
+            background: #3498db;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .search-btn:hover {
+            background: #2980b9;
+        }
+        
+        .results {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-item {
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .result-title {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .result-code {
+            color: #e74c3c;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        .result-description {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .result-symptoms {
+            color: #27ae60;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .quick-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .example-card {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .example-card:hover {
+            background: #d4e9f7;
+        }
+        
+        .example-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .example-desc {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: #f1f2f6;
+            border-radius: 8px;
+            padding: 5px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 AYUSH Medical Search</h1>
+            <p>Search medical conditions in both WHO ICD-11 and Indian AYUSH systems</p>
+        </div>
+        
+        <div class="simple-stats">
+            <div class="stat-card">
+                <div class="stat-number" id="whoCount">45+</div>
+                <div class="stat-label">WHO ICD-11 Conditions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="namasteCount">25+</div>
+                <div class="stat-label">NAMASTE AYUSH Terms</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="medicineCount">15+</div>
+                <div class="stat-label">Traditional Medicines</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="procedureCount">16+</div>
+                <div class="stat-label">Treatment Procedures</div>
+            </div>
+        </div>
+        
+        <div class="search-section">
+            <h2>🔍 Quick Medical Search</h2>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('simple')">Simple Search</button>
+                <button class="tab" onclick="switchTab('who')">WHO ICD-11</button>
+                <button class="tab" onclick="switchTab('ayush')">AYUSH Systems</button>
+                <button class="tab" onclick="switchTab('fhir')">FHIR Testing</button>
+            </div>
+            
+            <!-- Simple Search Tab -->
+            <div id="simple-tab" class="tab-content active">
+                <div class="search-form">
+                    <div class="form-group">
+                        <label for="simple-search">Search for any medical condition:</label>
+                        <input type="text" id="simple-search" placeholder="e.g., diabetes, heart disease, cough, fever...">
+                    </div>
+                    <button class="search-btn" onclick="performSimpleSearch()">🔍 Search Everything</button>
+                </div>
+                
+                <div class="quick-examples">
+                    <div class="example-card" onclick="quickSearch('diabetes')">
+                        <div class="example-title">Diabetes</div>
+                        <div class="example-desc">Search in both WHO and Ayurveda</div>
+                    </div>
+                    <div class="example-card" onclick="quickSearch('arthritis')">
+                        <div class="example-title">Arthritis</div>
+                        <div class="example-desc">Joint pain conditions</div>
+                    </div>
+                    <div class="example-card" onclick="quickSearch('asthma')">
+                        <div class="example-title">Respiratory</div>
+                        <div class="example-desc">Breathing disorders</div>
+                    </div>
+                    <div class="example-card" onclick="quickSearch('depression')">
+                        <div class="example-title">Mental Health</div>
+                        <div class="example-desc">Psychological conditions</div>
+                    </div>
+                </div>
+            </div>
+        
+        .status-bar {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .status-item {
+            background: #27ae60;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 8px;
+        }
+        
+        .endpoint-list {
+            list-style: none;
+        }
+        
+        .endpoint-list li {
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .endpoint-list li strong {
+            color: #e74c3c;
+            font-size: 0.9rem;
+        }
+        
+        .endpoint-list li a {
+            color: #2980b9;
+            text-decoration: none;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+        
+        .endpoint-list li a:hover {
+            background: #ecf0f1;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .test-btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .data-stats {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .data-stats h4 {
+            margin-bottom: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .footer {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .footer p {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+        
+        .tech-badges {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .tech-badge {
+            background: #34495e;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>🏥 AYUSH FHIR Terminology Microservice</h1>
+            <p>Production-ready FHIR R4-compliant microservice integrating India's NAMASTE codes with WHO ICD-11 Traditional Medicine</p>
+            <div class="status-bar">
+                <div class="status-item">🟢 Server Online</div>
+                <div class="status-item">📊 38 WHO Conditions</div>
+                <div class="status-item">🌿 5 NAMASTE Conditions</div>
+                <div class="status-item">💊 3 Medicines</div>
+                <div class="status-item">⚕️ FHIR R4 Compliant</div>
+                <div class="status-item">🏆 SIH 2025 Ready</div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid">
+            <!-- System Health -->
+            <div class="card">
+                <h3>🔧 System Health</h3>
+                <ul class="endpoint-list">
+                    <li>
+                        <strong>Health Check:</strong><br>
+                        <a href="http://127.0.0.1:8000/health" target="_blank">http://127.0.0.1:8000/health</a>
+                    </li>
+                    <li>
+                        <strong>API Documentation:</strong><br>
+                        <a href="http://127.0.0.1:8000/docs" target="_blank">http://127.0.0.1:8000/docs</a>
+                    </li>
+                    <li>
+                        <strong>OpenAPI Spec:</strong><br>
+                        <a href="http://127.0.0.1:8000/openapi.json" target="_blank">http://127.0.0.1:8000/openapi.json</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- WHO ICD-11 Integration -->
+            <div class="card">
+                <h3>🌍 WHO ICD-11 Integration</h3>
+                <div class="data-stats">
+                    <h4>📊 Data Status</h4>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">38</div>
+                            <div>Conditions</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">7</div>
+                            <div>Categories</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5</div>
+                            <div>TM2 Codes</div>
+                        </div>
+                    </div>
+                </div>
+                <ul class="endpoint-list">
+                    <li>
+                        <strong>Search:</strong><br>
+                        <a href="http://127.0.0.1:8000/who-icd/search?q=diabetes" target="_blank">who-icd/search?q=diabetes</a>
+                    </li>
+                    <li>
+                        <strong>Data Status:</strong><br>
+                        <a href="http://127.0.0.1:8000/who-icd/status" target="_blank">who-icd/status</a>
+                    </li>
+                    <li>
+                        <strong>Entity Details:</strong><br>
+                        <a href="http://127.0.0.1:8000/who-icd/entity/1A00" target="_blank">who-icd/entity/{id}</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- NAMASTE Terminology -->
+            <div class="card">
+                <h3>🌿 NAMASTE Terminology</h3>
+                <div class="data-stats">
+                    <h4>📊 AYUSH Data</h4>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">5</div>
+                            <div>Conditions</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">3</div>
+                            <div>Medicines</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">3</div>
+                            <div>Procedures</div>
+                        </div>
+                    </div>
+                </div>
+                <ul class="endpoint-list">
+                    <li>
+                        <strong>Search All:</strong><br>
+                        <a href="http://127.0.0.1:8000/api/v1/namaste/search?q=diabetes" target="_blank">api/v1/namaste/search?q=diabetes</a>
+                    </li>
+                    <li>
+                        <strong>Conditions:</strong><br>
+                        <a href="http://127.0.0.1:8000/namaste/conditions" target="_blank">namaste/conditions</a>
+                    </li>
+                    <li>
+                        <strong>Medicines:</strong><br>
+                        <a href="http://127.0.0.1:8000/namaste/medicines" target="_blank">namaste/medicines</a>
+                    </li>
+                    <li>
+                        <strong>Procedures:</strong><br>
+                        <a href="http://127.0.0.1:8000/namaste/procedures" target="_blank">namaste/procedures</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- FHIR R4 Operations -->
+            <div class="card">
+                <h3>⚕️ FHIR R4 Operations</h3>
+                <ul class="endpoint-list">
+                    <li>
+                        <strong>CodeSystem $lookup (POST):</strong><br>
+                        <a href="http://127.0.0.1:8000/docs#/FHIR%20R4/fhir_code_lookup_fhir_CodeSystem__lookup_post" target="_blank">fhir/CodeSystem/$lookup</a>
+                    </li>
+                    <li>
+                        <strong>ConceptMap $translate (POST):</strong><br>
+                        <a href="http://127.0.0.1:8000/docs#/FHIR%20R4/fhir_concept_translate_fhir_ConceptMap__translate_post" target="_blank">fhir/ConceptMap/$translate</a>
+                    </li>
+                    <li>
+                        <strong>Standards Overview:</strong><br>
+                        <a href="http://127.0.0.1:8000/api/v1/standards" target="_blank">api/v1/standards</a>
+                    </li>
+                </ul>
+                <div style="margin-top: 15px; padding: 10px; background: #e8f5e8; border-radius: 8px; border-left: 4px solid #27ae60;">
+                    <strong>💡 FHIR Testing:</strong> Use the API docs above to test POST operations with parameters like:
+                    <br>• system: "http://who.int/icd/11"
+                    <br>• code: "1A00" (WHO codes)
+                    <br>• system: "http://namaste.ayush.gov.in"
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Test Section -->
+        <div class="test-section">
+            <h3>🧪 Quick Test Center</h3>
+            <p>Click these buttons to quickly test different endpoints:</p>
+            <div class="test-buttons">
+                <button class="test-btn" onclick="window.open('http://127.0.0.1:8000/health', '_blank')">
+                    🔧 Test Health
+                </button>
+                <button class="test-btn" onclick="window.open('http://127.0.0.1:8000/who-icd/search?q=diabetes', '_blank')">
+                    🌍 Test WHO Search
+                </button>
+                <button class="test-btn" onclick="window.open('http://127.0.0.1:8000/api/v1/namaste/search?q=diabetes', '_blank')">
+                    🌿 Test NAMASTE Search
+                </button>
+                <button class="test-btn" onclick="window.open('http://127.0.0.1:8000/who-icd/status', '_blank')">
+                    📊 WHO Data Status
+                </button>
+                <button class="test-btn" onclick="window.open('http://127.0.0.1:8000/docs', '_blank')">
+                    📚 API Documentation
+                </button>
+                <button class="test-btn" onclick="window.open('http://127.0.0.1:8000/api/v1/standards', '_blank')">
+                    ⚕️ FHIR Standards
+                </button>
+            </div>
+        </div>
+
+        <!-- Simple FHIR Testing -->
+        <div class="test-section" style="margin-top: 30px;">
+            <h3>⚕️ FHIR Testing Made Easy</h3>
+            <p>Test FHIR operations with simple dropdowns - no typing required!</p>
+            
+            <!-- Interactive FHIR Tester -->
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 15px; margin-top: 20px; border: 2px solid #3498db;">
+                <h4>🧪 Interactive FHIR Code Lookup</h4>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: end; margin: 20px 0;">
+                    
+                    <!-- System Dropdown -->
+                    <div>
+                        <label style="display: block; font-weight: bold; margin-bottom: 8px; color: #2c3e50;">
+                            🏥 Select Medical System:
+                        </label>
+                        <select id="systemSelect" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #bdc3c7; font-size: 1rem; background: white;">
+                            <option value="http://who.int/icd/11">WHO ICD-11 (World Health Organization)</option>
+                            <option value="http://namaste.ayush.gov.in">NAMASTE (AYUSH Traditional Medicine)</option>
+                        </select>
+                    </div>
+
+                    <!-- Code Dropdown -->
+                    <div>
+                        <label style="display: block; font-weight: bold; margin-bottom: 8px; color: #2c3e50;">
+                            🔍 Select Medical Code:
+                        </label>
+                        <select id="codeSelect" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #bdc3c7; font-size: 1rem; background: white;">
+                            <!-- WHO ICD-11 Codes -->
+                            <optgroup label="🌍 WHO ICD-11 Diseases">
+                                <option value="1A00">1A00 - Cholera</option>
+                                <option value="5A00">5A00 - Diabetes mellitus</option>
+                                <option value="1B10">1B10 - Pulmonary tuberculosis</option>
+                                <option value="1C60">1C60 - Malaria</option>
+                                <option value="BA00">BA00 - Essential hypertension</option>
+                                <option value="CA00">CA00 - Acute upper respiratory infections</option>
+                                <option value="1A20">1A20 - Plague</option>
+                                <option value="1E50">1E50 - Hepatitis A</option>
+                                <option value="6C00">6C00 - Mood disorders</option>
+                                <option value="CB00">CB00 - Influenza and pneumonia</option>
+                            </optgroup>
+                            <!-- NAMASTE Codes -->
+                            <optgroup label="🌿 NAMASTE AYUSH">
+                                <option value="NAM001">NAM001 - AYUSH Condition 1</option>
+                                <option value="NAM002">NAM002 - AYUSH Condition 2</option>
+                                <option value="NAM003">NAM003 - AYUSH Condition 3</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- Test Button -->
+                    <div>
+                        <button onclick="testFHIR()" style="padding: 12px 25px; background: linear-gradient(45deg, #3498db, #2980b9); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; white-space: nowrap;">
+                            🧪 Test Now!
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; border-left: 4px solid #27ae60;">
+                    <strong>📖 How it works:</strong>
+                    <ol style="margin: 10px 0 0 20px; line-height: 1.6;">
+                        <li><strong>Choose a system</strong> from the first dropdown (WHO or NAMASTE)</li>
+                        <li><strong>Pick a medical code</strong> from the second dropdown</li>
+                        <li><strong>Click "Test Now!"</strong> to see the FHIR results</li>
+                    </ol>
+                </div>
+
+                <!-- Results Area -->
+                <div id="resultsArea" style="margin-top: 20px; padding: 15px; background: white; border-radius: 8px; border: 2px solid #ecf0f1; display: none;">
+                    <h5 style="color: #2c3e50; margin-bottom: 10px;">📋 Test Results:</h5>
+                    <div id="resultsContent" style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; white-space: pre-wrap; max-height: 300px; overflow-y: auto;"></div>
+                </div>
+            </div>
+
+            <!-- Traditional Testing Method -->
+            <div style="margin-top: 30px; padding: 20px; background: #fff3cd; border-radius: 10px; border-left: 4px solid #ffc107;">
+                <h4>📚 Or Use Traditional API Documentation:</h4>
+                <p>If you prefer the detailed API docs interface:</p>
+                <button class="test-btn" onclick="window.open('http://127.0.0.1:8000/docs#/FHIR%20R4/fhir_code_lookup_fhir_CodeSystem__lookup_post', '_blank')" style="width: 100%;">
+                    📖 Open Full API Documentation
+                </button>
+                <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
+                    <strong>Manual values to copy:</strong> System: <code>http://who.int/icd/11</code>, Code: <code>1A00</code>
+                </p>
+            </div>
+        </div>
+
+        <script>
+            // Update code dropdown based on selected system
+            document.getElementById('systemSelect').addEventListener('change', function() {
+                const codeSelect = document.getElementById('codeSelect');
+                const system = this.value;
+                
+                // Clear current options
+                codeSelect.innerHTML = '';
+                
+                if (system === 'http://who.int/icd/11') {
+                    codeSelect.innerHTML = `
+                        <optgroup label="🌍 WHO ICD-11 Diseases">
+                            <option value="1A00">1A00 - Cholera</option>
+                            <option value="5A00">5A00 - Diabetes mellitus</option>
+                            <option value="1B10">1B10 - Pulmonary tuberculosis</option>
+                            <option value="1C60">1C60 - Malaria</option>
+                            <option value="BA00">BA00 - Essential hypertension</option>
+                            <option value="CA00">CA00 - Acute upper respiratory infections</option>
+                            <option value="1A20">1A20 - Plague</option>
+                            <option value="1E50">1E50 - Hepatitis A</option>
+                            <option value="6C00">6C00 - Mood disorders</option>
+                            <option value="CB00">CB00 - Influenza and pneumonia</option>
+                        </optgroup>
+                    `;
+                } else if (system === 'http://namaste.ayush.gov.in') {
+                    codeSelect.innerHTML = `
+                        <optgroup label="🌿 NAMASTE AYUSH">
+                            <option value="NAM001">NAM001 - AYUSH Condition 1</option>
+                            <option value="NAM002">NAM002 - AYUSH Condition 2</option>
+                            <option value="NAM003">NAM003 - AYUSH Condition 3</option>
+                        </optgroup>
+                    `;
+                }
+            });
+
+            // Test FHIR function
+            async function testFHIR() {
+                const system = document.getElementById('systemSelect').value;
+                const code = document.getElementById('codeSelect').value;
+                const resultsArea = document.getElementById('resultsArea');
+                const resultsContent = document.getElementById('resultsContent');
+                
+                // Show loading
+                resultsArea.style.display = 'block';
+                resultsContent.textContent = '⏳ Testing FHIR lookup...\n\nSystem: ' + system + '\nCode: ' + code + '\n\nPlease wait...';
+                
+                try {
+                    const response = await fetch(`http://127.0.0.1:8000/fhir/CodeSystem/$lookup?system=${encodeURIComponent(system)}&code=${encodeURIComponent(code)}`, {
+                        method: 'POST'
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        resultsContent.innerHTML = `✅ <strong style="color: #27ae60;">SUCCESS!</strong> (Status: ${response.status})
+
+📋 <strong>FHIR Response:</strong>
+${JSON.stringify(result, null, 2)}
+
+🎯 <strong>What this means:</strong>
+• Medical code "${code}" was found successfully
+• System: ${system}
+• Information retrieved in FHIR R4 format
+• This proves your AYUSH-WHO integration is working!`;
+                    } else {
+                        resultsContent.innerHTML = `❌ <strong style="color: #e74c3c;">ERROR</strong> (Status: ${response.status})
+
+📋 <strong>Error Response:</strong>
+${JSON.stringify(result, null, 2)}
+
+💡 <strong>This might mean:</strong>
+• Code "${code}" not found in system
+• System "${system}" not available
+• Check the dropdown selections above`;
+                    }
+                } catch (error) {
+                    resultsContent.innerHTML = `� <strong style="color: #e74c3c;">CONNECTION ERROR</strong>
+
+❌ <strong>Error:</strong>
+${error.message}
+
+💡 <strong>Possible causes:</strong>
+• Server is not running (check http://127.0.0.1:8000/health)
+• Network connection issue
+• CORS policy blocking request
+
+🔧 <strong>Quick fix:</strong>
+• Make sure your server is running
+• Try refreshing the page`;
+                }
+            }
+        </script>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>🏆 Smart India Hackathon 2025 - Healthcare Digitization</strong></p>
+            <p>Bridging Traditional AYUSH Medicine with Modern Biomedical Systems</p>
+            <div class="tech-badges">
+                <span class="tech-badge">FastAPI</span>
+                <span class="tech-badge">FHIR R4</span>
+                <span class="tech-badge">WHO ICD-11</span>
+                <span class="tech-badge">NAMASTE</span>
+                <span class="tech-badge">OAuth 2.0</span>
+                <span class="tech-badge">ABHA Ready</span>
+                <span class="tech-badge">Python</span>
+                <span class="tech-badge">REST API</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple health check indicator
+        async function checkHealth() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/health');
+                if (response.ok) {
+                    document.querySelector('.status-item').style.background = '#27ae60';
+                    document.querySelector('.status-item').textContent = '🟢 Server Online';
+                } else {
+                    document.querySelector('.status-item').style.background = '#e74c3c';
+                    document.querySelector('.status-item').textContent = '🔴 Server Issue';
+                }
+            } catch (error) {
+                document.querySelector('.status-item').style.background = '#e74c3c';
+                document.querySelector('.status-item').textContent = '🔴 Server Offline';
+            }
+        }
+
+        // Check health on page load
+        checkHealth();
+        
+        // Auto-refresh health status every 30 seconds
+        setInterval(checkHealth, 30000);
+    </script>
+</body>
+</html>

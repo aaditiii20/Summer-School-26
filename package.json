@@ -1,0 +1,30 @@
+{
+  "name": "ayush-fhir-portal",
+  "version": "1.0.0",
+  "description": "AYUSH FHIR Terminology Portal - Ultra-precision medical terminology system",
+  "main": "api/health.py",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static build - no build step required'",
+    "deploy": "vercel --prod",
+    "preview": "vercel"
+  },
+  "keywords": [
+    "ayush",
+    "fhir",
+    "medical",
+    "terminology",
+    "healthcare",
+    "icd11",
+    "namaste"
+  ],
+  "author": "AYUSH Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/007-SARANG/SIH.git"
+  },
+  "engines": {
+    "node": ">=14.x"
+  }
+}

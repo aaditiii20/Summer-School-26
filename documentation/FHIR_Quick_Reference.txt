@@ -1,0 +1,61 @@
+﻿ FHIR TESTING CHEAT SHEET
+
+ SUPER EASY METHOD (RECOMMENDED):
+Go to: http://127.0.0.1:8000/
+Scroll to: "FHIR Testing Made Easy"
+Use dropdowns → Click "Test Now!"
+
+ SYSTEMS AVAILABLE:
+
+  WHO ICD-11                       
+ → World Health Organization         
+ → 10 disease codes available        
+
+
+
+  NAMASTE AYUSH                    
+ → Traditional Indian Medicine       
+ → 3 AYUSH codes available           
+
+
+ MANUAL TESTING (IF NEEDED):
+
+
+  WHO Test Values                    
+
+ system: http://who.int/icd/11       
+ code: 1A00 (Cholera)               
+ version: (empty)                    
+
+
+
+  NAMASTE Test Values                
+
+ system: http://namaste.ayush.gov.in 
+ code: NAM001                        
+ version: (empty)                    
+
+
+ SIMPLE STEPS:
+1. Go to: http://127.0.0.1:8000/
+2. Use dropdowns (no typing!)
+3. Click "Test Now!"
+4. See instant results!
+
+OR MANUAL METHOD:
+1. Go to: http://127.0.0.1:8000/docs
+2. Find: "FHIR R4" → "POST /fhir/CodeSystem/$lookup"
+3. Click: "Try it out"
+4. Copy values from above
+5. Click: "Execute"
+
+ SUCCESS = Status 200 + Medical info
+ ERROR = Status 404 + Error message
+
+ DROPDOWN CODES AVAILABLE:
+WHO: Cholera, Diabetes, TB, Malaria, Hypertension
+NAMASTE: NAM001, NAM002, NAM003
+
+ TIP: Dropdown method is MUCH easier!
+ TIP: No typing = No mistakes!
+ TIP: Results show instantly!

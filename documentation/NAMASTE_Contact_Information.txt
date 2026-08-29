@@ -1,0 +1,95 @@
+﻿NAMASTE DATA - OFFICIAL CONTACT INFORMATION
+
+**PRIMARY CONTACTS:**
+
+1. **Ministry of AYUSH (Main Office)**
+   - Website: https://ayush.gov.in/
+   - Email: minister-ayush@gov.in
+   - Phone: +91-11-24651950, 24651951
+   - Address: AYUSH Bhawan, B Block, GPO Complex, INA, New Delhi - 110023
+
+2. **NAMASTE Project - Technical Team**
+   - Website: http://namaste.ayush.gov.in/
+   - Email: namaste-ayush@gov.in
+   - Technical Support: support-namaste@nic.in
+   - Phone: +91-11-24651952
+
+3. **National Institute of Ayurveda (NIA)**
+   - Email: director@nia.nic.in
+   - Phone: +91-294-2470039
+   - Address: Jodhpur, Rajasthan - 342037
+
+4. **Central Council for Research in Ayurvedic Sciences (CCRAS)**
+   - Website: http://ccras.nic.in/
+   - Email: dg-ccras@nic.in
+   - Phone: +91-11-24651947
+   - Address: 61-65, Institutional Area, Janakpuri, New Delhi - 110058
+
+5. **National Informatics Centre (NIC) - AYUSH Division**
+   - Email: ayush-nic@gov.in
+   - Technical: nicayush@nic.in
+   - Phone: +91-11-24305081
+
+**REGIONAL CONTACTS:**
+
+6. **AYUSH State Nodal Officers** (Contact through state-wise listing)
+   - Check: https://ayush.gov.in/state-contacts
+   - For state-specific NAMASTE implementation
+
+**ACADEMIC & RESEARCH CONTACTS:**
+
+7. **Institute of Teaching and Research in Ayurveda (ITRA)**
+   - Email: director@itra.nic.in
+   - Phone: +91-79-27912770
+   - Address: Jamnagar, Gujarat
+
+8. **National Institute of Homoeopathy**
+   - Email: director@nih.nic.in
+   - Phone: +91-33-24237160
+   - Address: Kolkata, West Bengal
+
+**DATA ACCESS SPECIFIC CONTACTS:**
+
+9. **Digital Health Division - AYUSH**
+   - Email: digitalhealth-ayush@gov.in
+   - NDHM Integration: ndhm-ayush@nic.in
+
+10. **NAMASTE Technical Committee**
+    - Chairman: dg-ccras@nic.in
+    - Technical Lead: namaste-tech@nic.in
+    - Data Governance: data-ayush@gov.in
+
+**RECOMMENDED EMAIL SEQUENCE:**
+
+**First Contact:**
+- namaste-ayush@gov.in (Primary NAMASTE team)
+- CC: minister-ayush@gov.in
+
+**Technical Follow-up:**
+- support-namaste@nic.in
+- CC: ayush-nic@gov.in
+
+**Academic Research:**
+- dg-ccras@nic.in
+- CC: director@nia.nic.in
+
+**SOCIAL MEDIA CONTACTS (For Updates):**
+- Twitter: @moayush
+- Facebook: @MinistryofAYUSH
+- LinkedIn: Ministry of AYUSH
+
+**IMPORTANT NOTES:**
+1. Use official email addresses only
+2. Mention "SIH 2025" and "Academic Research" in subject line
+3. Reference "NDHM Integration" and "Healthcare Interoperability"
+4. Follow up after 7-10 business days if no response
+5. Consider RTI (Right to Information) as backup option if needed
+
+**RTI BACKUP OPTION:**
+If email requests don't work, you can file an RTI application:
+- RTI Portal: https://rtionline.gov.in/
+- Ministry: AYUSH
+- Information: NAMASTE database access for academic research
+
+**BEST APPROACH:**
+Start with namaste-ayush@gov.in and follow the escalation path if needed.

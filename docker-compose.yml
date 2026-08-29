@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  ayush-fhir-portal:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - PORT=8000
+    volumes:
+      - ./data:/app/data:ro
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./frontend:/usr/share/nginx/html/frontend:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - ayush-fhir-portal
+    restart: unless-stopped
+
+networks:
+  default:
+    name: ayush-fhir-network
